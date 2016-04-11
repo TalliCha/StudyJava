@@ -6,6 +6,7 @@ public class Star {
 		triangle(7); // 삼각형
 		Inverted_triangle(7); // 역삼각형
 
+		
 		diamond(7); // 다이아몬드
 		Sandglass(7); // 모래시계
 
