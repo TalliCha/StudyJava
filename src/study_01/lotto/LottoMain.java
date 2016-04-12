@@ -6,9 +6,9 @@ public class LottoMain {
 		Lotto lotto = Lotto.makeLotto(round);
 
 		lotto.add(round);
-		
+
 		lotto.printAll();
-		
+
 		LottoAnalysis.analysis(lotto);
 	}
 }

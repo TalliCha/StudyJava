@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class Lotto {
+public final class Lotto {
 	private Set<Integer> lottoGame;
 	private List<Set<Integer>> lottoList;
 
@@ -29,7 +29,7 @@ public class Lotto {
 			lottoGame.add((int) (Math.random() * 45 + 1));
 		return lottoGame;
 	}
-	
+
 	/**
 	 * @return lottoList
 	 */
@@ -44,7 +44,7 @@ public class Lotto {
 	public static Lotto makeLotto(int round) {
 		return new Lotto(round);
 	}
-	
+
 	/**
 	 * @param round
 	 */

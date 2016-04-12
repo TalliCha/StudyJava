@@ -17,12 +17,13 @@ public class LottoAnalysis {
 
 		Map<Integer, Integer> resCount = Counting(lotto);
 		List<Integer> sortedKey = sortKeyByValue(resCount);
-		
+
 		print(sortedKey, resCount);
 	}
 
 	/**
 	 * lotto 에 저장된 같은 num의 갯수를 저장한 resCount를 반환
+	 * 
 	 * @param lotto
 	 * @return resCount
 	 */
@@ -42,6 +43,7 @@ public class LottoAnalysis {
 
 	/**
 	 * resCount의 value 기준으로 key 정렬후 sortedKey로 반환
+	 * 
 	 * @param resCount
 	 * @return sortedKey
 	 */
@@ -63,6 +65,7 @@ public class LottoAnalysis {
 
 	/**
 	 * sortedKey 순서로 resCount 출력
+	 * 
 	 * @param sortedKey
 	 * @param lottoAnalysis
 	 */
