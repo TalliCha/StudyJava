@@ -10,6 +10,5 @@ public class LottoMain {
 		lotto.printAll();
 
 		LottoAnalysis.analysis(lotto);
-		System.out.println(1);
 	}
 }
