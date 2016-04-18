@@ -5,19 +5,19 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
-import study_02.vo.Lotto;
+import study_02.vo.AnalysisVo;
+import study_02.vo.LottoVo;
 
 public class LottoOracleDao implements LottoDao {
-
-	private final String driver = "";
-	private final String url = "";
-	private final String user = "";
-	private final String passwd = "";
+	
+	private final String driver = "oracle.jdbc.driver.OracleDriver";
+	private final String url = "jdbc:oracl:thin:@localhost:1521:orcl";
+	private final String user = "talli";
+	private final String passwd = "1234";
 
 	private Connection connect() throws SQLException, ClassNotFoundException {
 		Class.forName(driver);
@@ -25,30 +25,40 @@ public class LottoOracleDao implements LottoDao {
 	}
 
 	@Override
-	public int insert(List<Lotto> lottoList) {
-		String sql = "";
+	public int insert(List<LottoVo> lottoList) {
 
-		return sqlUpdate(sql);
+		int count = 0;
+
+		for (LottoVo lotto : lottoList) {
+			
+			String sql = "INSERT INTO lottolist(idx) VALUES (lotto_idx.NEXTVAL)";
+			count += sqlUpdate(sql);
+			for (Integer num : lotto.getLotto()) {
+				sql = "INSERT INTO numbers(idx,num) SELECT MAX(idx), " + num + " from lottolist ";
+				sqlUpdate(sql);
+			}
+		}
+		return count;
 
 	}
 
 	@Override
 	public int delete() {
-		String sql = "";
+		String sql = "DELETE FROM lottolist";
 
 		return sqlUpdate(sql);
 	}
 
 	@Override
-	public List<Lotto> select() {
-		String sql = "";
+	public Map<Integer, LottoVo> select() {
+		String sql = "SELECT * FROM NUMBERS ORDER BY idx ASC";
 
 		return sqlSelectQuery(sql);
 	}
 
 	@Override
-	public Map<Integer, Integer> analysis() {
-		String sql = "";
+	public AnalysisVo analysis() {
+		String sql = "SELECT  num , COUNT(num) count_num  FROM numbers GROUP BY num ORDER BY count_num DESC ";
 		return analysisSqlQuery(sql);
 	}
 
@@ -61,30 +71,44 @@ public class LottoOracleDao implements LottoDao {
 		}
 	}
 
-	private List<Lotto> sqlSelectQuery(String sql) {
+	private Map<Integer, LottoVo> sqlSelectQuery(String sql) {
 		try (Connection conn = connect();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql);) {
-			List<Lotto> list = new ArrayList<>();
-			while (rs.next()) {
 
+			Map<Integer, LottoVo> lottoMap = new TreeMap<Integer, LottoVo>();
+
+			while (rs.next()) {
+				int idx = rs.getInt("idx");
+				int num = rs.getInt("num");
+
+				if (!lottoMap.containsKey(idx))
+					lottoMap.put(idx, new LottoVo());
+
+				lottoMap.get(idx).getLotto().add(num);
 			}
-			return list;
+			return lottoMap;
+
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	private Map<Integer, Integer> analysisSqlQuery(String sql) {
+	private AnalysisVo analysisSqlQuery(String sql) {
 		try (Connection conn = connect();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql);) {
-			HashMap<Integer, Integer> map = new HashMap<>();
-			while (rs.next()) {
 
+			AnalysisVo analysisVo = new AnalysisVo();
+			while (rs.next()) {
+				int num = rs.getInt("num");
+				int count_num = rs.getInt("count_num");
+
+				analysisVo.getSortedNum().add(num);
+				analysisVo.getNumMap().put(num, count_num);
 			}
-			return map;
+			return analysisVo;
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 			return null;

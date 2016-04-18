@@ -1,4 +1,4 @@
-package study_02.dbconnector;
+package study_02.db;
 
 import study_02.service.LottoService;
 import study_02.dao.LottoMysqlDao;

@@ -3,10 +3,10 @@ package study_02.vo;
 import java.util.Set;
 import java.util.TreeSet;
 
-public final class Lotto {
+public final class LottoVo {
 	private Set<Integer> lotto;
 
-	public Lotto() {
+	public LottoVo() {
 		lotto = new TreeSet<>();
 	}
 

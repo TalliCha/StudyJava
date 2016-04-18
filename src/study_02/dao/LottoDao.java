@@ -3,14 +3,15 @@ package study_02.dao;
 import java.util.List;
 import java.util.Map;
 
-import study_02.vo.Lotto;
+import study_02.vo.AnalysisVo;
+import study_02.vo.LottoVo;
 
 public interface LottoDao {
-	public int insert(List<Lotto> lottoList);
+	public int insert(List<LottoVo> lottoList);
 
 	public int delete();
 
-	public List<Lotto> select();
+	public Map<Integer, LottoVo> select();
 
-	public Map<Integer, Integer> analysis();
+	public AnalysisVo analysis();
 }
