@@ -2,6 +2,7 @@ package study_02.dao;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class LottoMysqlDao implements LottoDao {
 		this.bds.setInitialSize(initialSize);
 	}
 
-	private Connection connect() throws Exception {
+	private Connection connect() throws SQLException {
 		Connection conn = bds.getConnection();
 		return conn;
 	}
@@ -47,6 +48,7 @@ public class LottoMysqlDao implements LottoDao {
 			for (Integer num : lotto.getLotto()) {
 				sql = "INSERT INTO numbers(idx,num) SELECT MAX(idx),+" + num + " FROM lottolist;";
 				sqlUpdate(sql);
+				System.out.println(count+"/"+lottoList.size());
 			}
 		}
 		return count;
@@ -76,7 +78,7 @@ public class LottoMysqlDao implements LottoDao {
 	private int sqlUpdate(String sql) {
 		try (Connection conn = connect(); Statement stmt = conn.createStatement();) {
 			return stmt.executeUpdate(sql);
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			return 0;
 		}
@@ -100,7 +102,7 @@ public class LottoMysqlDao implements LottoDao {
 			}
 			return lottoMap;
 
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -120,7 +122,7 @@ public class LottoMysqlDao implements LottoDao {
 				analysisVo.getNumMap().put(num, count_num);
 			}
 			return analysisVo;
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}

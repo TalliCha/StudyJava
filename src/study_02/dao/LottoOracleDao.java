@@ -1,7 +1,6 @@
 package study_02.dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -9,19 +8,40 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import snaq.db.DBPoolDataSource;
 import study_02.vo.AnalysisVo;
 import study_02.vo.LottoVo;
 
 public class LottoOracleDao implements LottoDao {
-	
+
 	private final String driver = "oracle.jdbc.driver.OracleDriver";
 	private final String url = "jdbc:oracl:thin:@localhost:1521:orcl";
 	private final String user = "talli";
 	private final String passwd = "1234";
 
-	private Connection connect() throws SQLException, ClassNotFoundException {
-		Class.forName(driver);
-		return DriverManager.getConnection(url, user, passwd);
+	private final int minPool = 10;
+	private final int maxPool = 30;
+	private final int maxsize = 60;
+	private final int idleTimeout = 2600;
+
+	DBPoolDataSource bds;
+
+	public LottoOracleDao() {
+		this.bds = new DBPoolDataSource();
+		this.bds.setDriverClassName(driver);
+		this.bds.setUser(user);
+		this.bds.setPassword(passwd);
+		this.bds.setUrl(url);
+		this.bds.setMinPool(minPool);
+		this.bds.setMaxPool(maxPool);
+		this.bds.setMaxSize(maxsize);
+		this.bds.setIdleTimeout(idleTimeout); // Specified in seconds.
+
+	}
+
+	private Connection connect() throws SQLException {
+		Connection conn = bds.getConnection();
+		return conn;
 	}
 
 	@Override
@@ -30,12 +50,13 @@ public class LottoOracleDao implements LottoDao {
 		int count = 0;
 
 		for (LottoVo lotto : lottoList) {
-			
+
 			String sql = "INSERT INTO lottolist(idx) VALUES (lotto_idx.NEXTVAL)";
 			count += sqlUpdate(sql);
 			for (Integer num : lotto.getLotto()) {
 				sql = "INSERT INTO numbers(idx,num) SELECT MAX(idx), " + num + " from lottolist ";
 				sqlUpdate(sql);
+				System.out.println(count+"/"+lottoList.size());
 			}
 		}
 		return count;
@@ -65,7 +86,7 @@ public class LottoOracleDao implements LottoDao {
 	private int sqlUpdate(String sql) {
 		try (Connection conn = connect(); Statement stmt = conn.createStatement();) {
 			return stmt.executeUpdate(sql);
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			return 0;
 		}
@@ -89,7 +110,7 @@ public class LottoOracleDao implements LottoDao {
 			}
 			return lottoMap;
 
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -109,7 +130,7 @@ public class LottoOracleDao implements LottoDao {
 				analysisVo.getNumMap().put(num, count_num);
 			}
 			return analysisVo;
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}

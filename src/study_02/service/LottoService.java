@@ -19,14 +19,14 @@ public class LottoService {
 
 	public int setLottos(int round) {
 		int insertCount = dao.insert(makeLottoList(round));
-		System.out.println(insertCount+"개 : 로또 추가");
+		System.out.println(insertCount + "개 : 로또 추가");
 		return insertCount;
 	}
 
 	public Map<Integer, LottoVo> getLottos() {
 		Map<Integer, LottoVo> lottoMap = dao.select();
-		System.out.println(lottoMap.size()+"개 : 로또 검색");
-		
+		System.out.println(lottoMap.size() + "개 : 로또 검색");
+
 		for (Entry<Integer, LottoVo> entry : lottoMap.entrySet()) {
 			System.out.println(entry.getKey() + ":" + entry.getValue().getLotto());
 		}
@@ -42,7 +42,7 @@ public class LottoService {
 	public AnalysisVo analysis() {
 		AnalysisVo analysisList = dao.analysis();
 		for (Integer num : analysisList.getSortedNum()) {
-			System.out.println(num +" 번 :  "+analysisList.getNumMap().get(num) +" 개");
+			System.out.println(num + " 번 :  " + analysisList.getNumMap().get(num) + " 개");
 		}
 
 		return analysisList;
@@ -57,6 +57,7 @@ public class LottoService {
 			lottoList.add(makeLotto());
 
 		return lottoList;
+
 	}
 
 	private LottoVo makeLotto() {
