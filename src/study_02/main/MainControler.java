@@ -23,6 +23,8 @@ public class MainControler {
 
 	private static boolean menu(Scanner scanner) {
 
+		long start, end;
+
 		try {
 			int select = scanner.nextInt();
 			switch (select) {
@@ -31,19 +33,38 @@ public class MainControler {
 				System.out.print("몇개? =>");
 
 				int round = scanner.nextInt();
+				start = System.currentTimeMillis();
 				service.setLottos(round);
+				end = System.currentTimeMillis();
+
+				checkTimer(start, end);
 				break;
 			case 2:
 				System.out.println("[로또 전체 삭제]");
+				start = System.currentTimeMillis();
 				service.deleteAll();
+				end = System.currentTimeMillis();
+
+				checkTimer(start, end);
+
 				break;
 			case 3:
 				System.out.println("[로또 전체 출력]");
+				start = System.currentTimeMillis();
 				service.getLottos();
+				end = System.currentTimeMillis();
+
+				checkTimer(start, end);
+
 				break;
 			case 4:
 				System.out.println("[저장된 로또 분석]");
+				start = System.currentTimeMillis();
 				service.analysis();
+				end = System.currentTimeMillis();
+
+				checkTimer(start, end);
+
 				break;
 			case 5:
 				System.out.println("[종료]");
@@ -64,8 +85,13 @@ public class MainControler {
 		} catch (InputMismatchException e) {
 			System.out.println("#잘못된 입력#");
 			scanner.nextLine();
-//			e.printStackTrace(); // 에러 내역 출력
+			// e.printStackTrace(); // 에러 내역 출력
 			return true;
 		}
+	}
+
+	private static void checkTimer(long start, long end) {
+		System.out.println("#실행시간# : " + (end - start) / 1000.0 + "sec");
+
 	}
 }

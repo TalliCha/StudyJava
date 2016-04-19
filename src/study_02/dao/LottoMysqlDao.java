@@ -1,13 +1,13 @@
 package study_02.dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.apache.commons.dbcp2.BasicDataSource;
 
 import study_02.vo.AnalysisVo;
 import study_02.vo.LottoVo;
@@ -18,10 +18,22 @@ public class LottoMysqlDao implements LottoDao {
 	private final String url = "jdbc:mysql://localhost:3306/lottoserver";
 	private final String user = "talli";
 	private final String passwd = "1234";
+	private final int initialSize = 10;
 
-	private Connection connect() throws SQLException, ClassNotFoundException {
-		Class.forName(driver);
-		return DriverManager.getConnection(url, user, passwd);
+	private BasicDataSource bds;
+
+	public LottoMysqlDao() {
+		this.bds = new BasicDataSource();
+		this.bds.setDriverClassName(driver);
+		this.bds.setUsername(user);
+		this.bds.setPassword(passwd);
+		this.bds.setUrl(url);
+		this.bds.setInitialSize(initialSize);
+	}
+
+	private Connection connect() throws Exception {
+		Connection conn = bds.getConnection();
+		return conn;
 	}
 
 	@Override
@@ -33,7 +45,7 @@ public class LottoMysqlDao implements LottoDao {
 			String sql = "INSERT INTO lottolist VALUES()";
 			count += sqlUpdate(sql);
 			for (Integer num : lotto.getLotto()) {
-				sql = "INSERT INTO numbers(idx,num) SELECT MAX(idx),+"+num+" FROM lottolist;";
+				sql = "INSERT INTO numbers(idx,num) SELECT MAX(idx),+" + num + " FROM lottolist;";
 				sqlUpdate(sql);
 			}
 		}
@@ -64,7 +76,7 @@ public class LottoMysqlDao implements LottoDao {
 	private int sqlUpdate(String sql) {
 		try (Connection conn = connect(); Statement stmt = conn.createStatement();) {
 			return stmt.executeUpdate(sql);
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
 		}
@@ -88,7 +100,7 @@ public class LottoMysqlDao implements LottoDao {
 			}
 			return lottoMap;
 
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -103,12 +115,12 @@ public class LottoMysqlDao implements LottoDao {
 			while (rs.next()) {
 				int num = rs.getInt("num");
 				int count_num = rs.getInt("count_num");
-				
+
 				analysisVo.getSortedNum().add(num);
 				analysisVo.getNumMap().put(num, count_num);
 			}
 			return analysisVo;
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
