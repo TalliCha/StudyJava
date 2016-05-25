@@ -48,8 +48,8 @@ public class LottoMysqlDao implements LottoDao {
 			for (Integer num : lotto.getLotto()) {
 				sql = "INSERT INTO numbers(idx,num) SELECT MAX(idx),+" + num + " FROM lottolist;";
 				sqlUpdate(sql);
-				System.out.println(count+"/"+lottoList.size());
 			}
+			System.out.println(count + "/" + lottoList.size());
 		}
 		return count;
 

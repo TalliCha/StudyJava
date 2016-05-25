@@ -10,9 +10,7 @@ create table lottolist(
 create table numbers(
 	idx INT not null,
 	num INT not null,
-	PRIMARY KEY  (idx), 
-	CONSTRAINT fk_idx 
-     FOREIGN KEY (idx) REFERENCES lottolist (idx) 
+	FOREIGN KEY (idx) REFERENCES lottolist (idx) 
 	 ON DELETE CASCADE 
 	 ON UPDATE CASCADE 
 )engine=InnoDB DEFAULT charset=utf8;
